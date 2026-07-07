@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RAM Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .ram {
+      font-size: 28px;
+      font-weight: bold;
+      color: #38bdf8;
+      margin: 15px 0;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #22c55e;
+      color: white;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #16a34a;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>💻 RAM Checker</h1>
+
+    <div class="ram" id="ram">-- MB</div>
+
+    <button onclick="loadRAM()">Check RAM</button>
+
+    <div class="status" id="status">Click to fetch RAM info</div>
+  </div>
+
+  <script>
+    async function loadRAM() {
+      const ramEl = document.getElementById("ram");
+      const statusEl = document.getElementById("status");
+
+      try {
+        statusEl.textContent = "Fetching RAM data...";
+
+        const res = await fetch("./api/get-ram.json");
+        const data = await res.json();
+
+        if (data.success === false) {
+          ramEl.textContent = data.ram_mb + " MB";
+          statusEl.textContent = "⚠ Mock RAM (error mode)";
+        } else {
+          ramEl.textContent = data.ram_mb + " MB";
+          statusEl.textContent = "✅ RAM loaded successfully";
+        }
+
+      } catch (err) {
+        ramEl.textContent = "-- MB";
+        statusEl.textContent = "❌ Failed to load API";
+      }
+    }
+  </script>
+
+</body>
+</html>
